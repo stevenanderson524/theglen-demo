@@ -7,6 +7,16 @@
  */
 const VIDEO_EXT = /\.(mp4|webm)(\?|#|$)/i;
 
+/** Same-origin paths need optional Helix code base (non-root mounts). */
+function resolveVideoSrc(pathOrUrl) {
+  const u = pathOrUrl.trim();
+  if (/^https?:\/\//i.test(u)) return u;
+  const base = (window.hlx?.codeBasePath ?? '').replace(/\/$/, '');
+  if (u.startsWith('/')) return `${base}${u}`;
+  if (u.startsWith('./')) return `${base}/${u.slice(2)}`;
+  return `${base}/${u}`;
+}
+
 function normalizeText(t) {
   return (t || '').replace(/[\u200b-\u200d\ufeff]/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -79,27 +89,29 @@ function resolveBackgroundMedia(bgRoot) {
   return null;
 }
 
-function mountPosterImage(bgRoot, src) {
+function mountPosterImage(row1, src) {
   const img = document.createElement('img');
   img.className = 'hero-event-bg-poster';
-  img.src = src;
+  img.src = resolveVideoSrc(src);
   img.alt = '';
   img.setAttribute('aria-hidden', 'true');
   img.decoding = 'async';
   img.fetchPriority = 'high';
-  bgRoot.replaceChildren(img);
+  row1.replaceChildren(img);
   return img;
 }
 
-function mountVideo(bgRoot, url) {
+function mountVideo(row1, url) {
   const video = document.createElement('video');
   video.className = 'hero-event-bg-video';
-  video.src = url;
-  bgRoot.replaceChildren(video);
+  video.src = resolveVideoSrc(url);
+  video.setAttribute('preload', 'auto');
+  video.setAttribute('muted', '');
+  row1.replaceChildren(video);
   return video;
 }
 
-function configureNativeVideo(video) {
+function configureNativeVideo(video, block) {
   video.classList.add('hero-event-bg-video');
   video.muted = true;
   video.defaultMuted = true;
@@ -107,8 +119,13 @@ function configureNativeVideo(video) {
   video.loop = true;
   video.playsInline = true;
   video.setAttribute('playsinline', '');
+  video.setAttribute('muted', '');
   video.setAttribute('aria-hidden', 'true');
   video.removeAttribute('controls');
+  video.addEventListener('error', () => {
+    video.classList.add('hero-event-video-error');
+    block.classList.add('no-image');
+  });
 }
 
 function attachReducedMotion(block, mediaEl, isVideo) {
@@ -137,21 +154,21 @@ function attachReducedMotion(block, mediaEl, isVideo) {
 }
 
 /** First row: picture/img, <video>, MP4/WebM URL, or Adobe …/play (poster image fallback). */
-function setupBackgroundMedia(block, bgRoot) {
-  const resolved = resolveBackgroundMedia(bgRoot);
+function setupBackgroundMedia(block, row1) {
+  const resolved = resolveBackgroundMedia(row1);
   if (!resolved) return false;
 
   if (resolved.kind === 'video' && resolved.el) {
-    bgRoot.replaceChildren(resolved.el);
-    configureNativeVideo(resolved.el);
+    row1.replaceChildren(resolved.el);
+    configureNativeVideo(resolved.el, block);
     attachReducedMotion(block, resolved.el, true);
   } else if (resolved.kind === 'video' && resolved.url) {
-    const video = mountVideo(bgRoot, resolved.url);
-    configureNativeVideo(video);
+    const video = mountVideo(row1, resolved.url);
+    configureNativeVideo(video, block);
     attachReducedMotion(block, video, true);
   } else if (resolved.kind === 'adobePoster') {
     const base = adobePlayUrlToPosterBase(resolved.url);
-    mountPosterImage(bgRoot, base);
+    mountPosterImage(row1, base);
   } else {
     return false;
   }
@@ -161,10 +178,10 @@ function setupBackgroundMedia(block, bgRoot) {
 }
 
 export default function decorate(block) {
-  const bgRoot = block.querySelector(':scope > div:first-child > div') || block.querySelector(':scope > div:first-child');
-  const hasPicture = !!block.querySelector(':scope > div:first-child picture');
-  const hasImg = !!block.querySelector(':scope > div:first-child img');
-  const hasMotionBg = bgRoot && setupBackgroundMedia(block, bgRoot);
+  const row1 = block.querySelector(':scope > div:first-child');
+  const hasPicture = !!row1?.querySelector('picture');
+  const hasImg = !!row1?.querySelector('img');
+  const hasMotionBg = row1 && setupBackgroundMedia(block, row1);
 
   if (!hasPicture && !hasImg && !hasMotionBg) {
     block.classList.add('no-image');
