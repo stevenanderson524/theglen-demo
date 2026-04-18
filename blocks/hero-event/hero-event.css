@@ -51,6 +51,18 @@
   inset: 0;
 }
 
+/* background video (first row: <video> or link to .mp4 / .webm) */
+.hero-event > div:first-child video,
+.hero-event > div:first-child .hero-event-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
 /* text content from second child */
 .hero-event > div:nth-child(2) {
   position: relative;
@@ -135,7 +147,7 @@
   margin: 8px auto;
 }
 
-/* fallback when no image — use committed hero-bg.jpg */
+/* fallback when no image/video — use committed hero-bg.jpg */
 .hero-event.no-image {
   background: #1a1a2e url('/content/media/hero-bg.jpg') center / cover no-repeat;
 }
