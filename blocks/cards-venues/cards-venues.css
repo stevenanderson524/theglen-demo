@@ -25,3 +25,35 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+.cards-venues .cards-venues-card-body h3 {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.cards-venues .cards-venues-card-body p {
+  font-size: 14px;
+  color: var(--text-color);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.cards-venues .cards-venues-card-body a {
+  display: inline-block;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--brand-navy);
+  color: var(--brand-navy);
+  border-radius: 2px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cards-venues .cards-venues-card-body a:hover {
+  background: var(--brand-navy);
+  color: #fff;
+}

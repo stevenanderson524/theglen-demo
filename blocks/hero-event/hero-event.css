@@ -120,13 +120,14 @@
 
 /* secondary button = white outlined */
 .hero-event a.button.secondary:any-link {
-  background: transparent;
-  border-color: #fff;
+  background: #004174;
+  border-color: #004174;
   color: #fff;
 }
 
 .hero-event a.button.secondary:hover {
-  background: rgb(255 255 255 / 20%);
+  background: #003561;
+  border-color: #003561;
 }
 
 /* button wrappers */

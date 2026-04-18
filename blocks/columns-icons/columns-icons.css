@@ -7,7 +7,8 @@
 .columns-icons-container .columns-icons-wrapper {
   max-width: unset;
   padding: 0;
-  background-color: var(--brand-navy);
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .columns-icons > div {
@@ -25,10 +26,19 @@
   flex: 1 1 auto;
   text-align: center;
   min-width: 0;
+  padding: 12px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fff;
+  transition: background 0.2s ease;
+}
+
+.columns-icons > div > div:hover {
+  background: #f0f4f8;
 }
 
 .columns-icons a:any-link {
-  color: #fff;
+  color: var(--brand-navy);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -40,6 +50,7 @@
 
 .columns-icons a:hover {
   color: var(--brand-red);
+  text-decoration: none;
 }
 
 /* hide images (icon SVGs from original site not available) */
@@ -55,7 +66,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #fff;
+  color: var(--brand-navy);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -64,6 +75,7 @@
 .columns-icons a.button:hover {
   background: transparent;
   color: var(--brand-red);
+  text-decoration: none;
 }
 
 /* Mobile: horizontal scroll */
