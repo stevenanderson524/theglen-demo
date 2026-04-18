@@ -4,17 +4,31 @@ function isVideoUrl(url) {
   return typeof url === 'string' && /^https?:\/\//i.test(url) && VIDEO_EXT.test(url);
 }
 
+/** First URL-shaped MP4/WebM substring in text (DA often pastes plain text, not a link). */
+function findVideoUrlInText(root) {
+  const text = root.textContent.trim();
+  if (isVideoUrl(text)) return text;
+  const match = text.match(/https?:\/\/\S+?\.(mp4|webm)(\?[^?\s#]*)?(#[^\s]*)?/i);
+  return match ? match[0] : '';
+}
+
 /**
- * Hero background: first row may be picture/img, a <video>, or a single link to MP4/WebM (DA pastes URL).
+ * Hero background: first row may be picture/img, a <video>, a link to MP4/WebM, or plain URL text (DA).
  */
 function setupBackgroundVideo(block, bgRoot) {
   let video = bgRoot.querySelector('video');
   const mp4Link = [...bgRoot.querySelectorAll('a[href]')].find((a) => isVideoUrl(a.getAttribute('href')));
+  const plainUrl = !video && !mp4Link ? findVideoUrlInText(bgRoot) : '';
 
   if (!video && mp4Link) {
     video = document.createElement('video');
     video.className = 'hero-event-bg-video';
     video.src = mp4Link.getAttribute('href');
+    bgRoot.replaceChildren(video);
+  } else if (!video && plainUrl) {
+    video = document.createElement('video');
+    video.className = 'hero-event-bg-video';
+    video.src = plainUrl;
     bgRoot.replaceChildren(video);
   }
 
