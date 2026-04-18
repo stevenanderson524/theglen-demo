@@ -5,7 +5,7 @@
   "created": "2026-04-18T06:10:00.000Z",
   "sourceContext": { "originUrl": "https://www.theglen.com/", "originPage": "homepage", "blockPosition": "top" },
   "visualCharacteristics": { "colorScheme": "dark", "density": "spacious", "purpose": "event-hero", "imagePattern": "video-bg" },
-  "contentPattern": { "structure": "heading + subtitle + 2 CTAs", "buttonCount": 2, "imageCount": 0 },
+  "contentPattern": { "structure": "row1: image, Adobe Assets …/play URL, or MP4/WebM URL; then heading + subtitle + CTAs", "buttonCount": 2, "imageCount": 0, "video": "absolute https: Adobe delivery …/adobe/assets/…/play (iframe) or direct .mp4/.webm (<video>)" },
   "reuseGuidance": { "suitableFor": ["event landing pages", "race weekend promos"], "notSuitableFor": ["text-only pages", "product pages"] },
   "usage": { "pagesUsing": ["/content/index"], "reuseCount": 1, "lastUsed": "2026-04-18T06:10:00.000Z" }
 }

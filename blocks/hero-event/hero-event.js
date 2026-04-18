@@ -1,39 +1,91 @@
+/**
+ * Hero background: first row = image (picture/img), direct MP4/WebM URL, or Adobe AEM Assets
+ * `/adobe/assets/.../play` URL (Dynamic Media player page — embedded as iframe, not <video>).
+ * Use absolute https URLs (DAM / CDN); EDS typically does not host large video binaries in Git.
+ */
 const VIDEO_EXT = /\.(mp4|webm)(\?|#|$)/i;
+
+function normalizeText(t) {
+  return (t || '').replace(/[\u200b-\u200d\ufeff]/g, '').replace(/\s+/g, ' ').trim();
+}
 
 function isVideoUrl(url) {
   return typeof url === 'string' && /^https?:\/\//i.test(url) && VIDEO_EXT.test(url);
 }
 
-/** First URL-shaped MP4/WebM substring in text (DA often pastes plain text, not a link). */
-function findVideoUrlInText(root) {
-  const text = root.textContent.trim();
-  if (isVideoUrl(text)) return text;
-  const match = text.match(/https?:\/\/\S+?\.(mp4|webm)(\?[^?\s#]*)?(#[^\s]*)?/i);
-  return match ? match[0] : '';
+/** Adobe delivery “player” page (not a raw file); must use iframe. */
+function isAdobeAssetPlayerUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const u = url.trim();
+  if (!/^https?:\/\//i.test(u)) return false;
+  if (!/adobeaemcloud\.com/i.test(u)) return false;
+  if (!/\/adobe\/assets\//i.test(u)) return false;
+  return /\/play(?:\?|#|$)/i.test(u);
+}
+
+function findAdobePlayerUrlInText(text) {
+  const norm = normalizeText(text);
+  if (isAdobeAssetPlayerUrl(norm)) return norm;
+  const re = /https:\/\/[^\s<>"']*adobeaemcloud\.com\/adobe\/assets\/[^\s<>"']*\/play(?:[^\s<>"']*)?/i;
+  const m = norm.match(re);
+  return m && isAdobeAssetPlayerUrl(m[0]) ? m[0].trim() : '';
+}
+
+function findVideoUrlInText(text) {
+  const norm = normalizeText(text);
+  if (isVideoUrl(norm)) return norm;
+  const re = /https?:\/\/[^\s<>"']+\.(?:mp4|webm)(?:[^\s<>"']*)?/i;
+  const m = norm.match(re);
+  return m && isVideoUrl(m[0]) ? m[0].trim() : '';
 }
 
 /**
- * Hero background: first row may be picture/img, a <video>, a link to MP4/WebM, or plain URL text (DA).
+ * @returns {{ kind: 'video', url?: string, el?: HTMLVideoElement } | { kind: 'iframe', url: string } | null}
  */
-function setupBackgroundVideo(block, bgRoot) {
-  let video = bgRoot.querySelector('video');
-  const mp4Link = [...bgRoot.querySelectorAll('a[href]')].find((a) => isVideoUrl(a.getAttribute('href')));
-  const plainUrl = !video && !mp4Link ? findVideoUrlInText(bgRoot) : '';
-
-  if (!video && mp4Link) {
-    video = document.createElement('video');
-    video.className = 'hero-event-bg-video';
-    video.src = mp4Link.getAttribute('href');
-    bgRoot.replaceChildren(video);
-  } else if (!video && plainUrl) {
-    video = document.createElement('video');
-    video.className = 'hero-event-bg-video';
-    video.src = plainUrl;
-    bgRoot.replaceChildren(video);
+function resolveBackgroundMedia(bgRoot) {
+  const existing = bgRoot.querySelector('video');
+  if (existing) {
+    return { kind: 'video', el: existing };
   }
 
-  if (!video) return false;
+  const links = [...bgRoot.querySelectorAll('a[href]')];
+  const hrefs = links.map((a) => (a.getAttribute('href') || '').trim()).filter(Boolean);
+  const adobeLink = hrefs.find(isAdobeAssetPlayerUrl);
+  if (adobeLink) return { kind: 'iframe', url: adobeLink };
+  const mp4Link = hrefs.find(isVideoUrl);
+  if (mp4Link) return { kind: 'video', url: mp4Link };
 
+  const raw = bgRoot.textContent;
+  const adobe = findAdobePlayerUrlInText(raw);
+  if (adobe) return { kind: 'iframe', url: adobe };
+  const vid = findVideoUrlInText(raw);
+  if (vid) return { kind: 'video', url: vid };
+
+  return null;
+}
+
+function mountIframe(bgRoot, url) {
+  const iframe = document.createElement('iframe');
+  iframe.className = 'hero-event-bg-embed';
+  iframe.src = url;
+  iframe.setAttribute('title', 'Hero background video');
+  iframe.setAttribute('aria-hidden', 'true');
+  iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+  iframe.setAttribute('loading', 'eager');
+  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+  bgRoot.replaceChildren(iframe);
+  return iframe;
+}
+
+function mountVideo(bgRoot, url) {
+  const video = document.createElement('video');
+  video.className = 'hero-event-bg-video';
+  video.src = url;
+  bgRoot.replaceChildren(video);
+  return video;
+}
+
+function configureNativeVideo(video) {
   video.classList.add('hero-event-bg-video');
   video.muted = true;
   video.defaultMuted = true;
@@ -43,25 +95,59 @@ function setupBackgroundVideo(block, bgRoot) {
   video.setAttribute('playsinline', '');
   video.setAttribute('aria-hidden', 'true');
   video.removeAttribute('controls');
+}
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const syncMotion = () => {
-    const onlyVideo = !block.querySelector(':scope > div:first-child picture')
-      && !block.querySelector(':scope > div:first-child img');
-    if (prefersReducedMotion.matches) {
-      video.pause();
-      video.removeAttribute('autoplay');
-      video.style.display = 'none';
-      if (onlyVideo) block.classList.add('no-image');
+function attachReducedMotion(block, mediaEl, isIframe) {
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const onlyMotionBg = () => !block.querySelector(':scope > div:first-child picture')
+    && !block.querySelector(':scope > div:first-child img');
+
+  const sync = () => {
+    const motionOnly = onlyMotionBg();
+    if (mq.matches) {
+      if (!isIframe) {
+        mediaEl.pause?.();
+        mediaEl.removeAttribute?.('autoplay');
+      }
+      mediaEl.style.display = 'none';
+      if (motionOnly) block.classList.add('no-image');
     } else {
-      video.style.display = '';
-      video.setAttribute('autoplay', '');
-      if (onlyVideo) block.classList.remove('no-image');
-      video.play?.().catch(() => {});
+      mediaEl.style.display = '';
+      if (!isIframe) {
+        mediaEl.setAttribute('autoplay', '');
+        mediaEl.play?.().catch(() => {});
+      }
+      if (motionOnly) block.classList.remove('no-image');
     }
   };
-  syncMotion();
-  prefersReducedMotion.addEventListener('change', syncMotion);
+  sync();
+  mq.addEventListener('change', sync);
+}
+
+/** First row: picture/img, <video>, MP4/WebM URL, or Adobe Assets …/play URL. */
+function setupBackgroundMedia(block, bgRoot) {
+  const resolved = resolveBackgroundMedia(bgRoot);
+  if (!resolved) return false;
+
+  let mediaEl;
+  let isIframe = false;
+
+  if (resolved.kind === 'video' && resolved.el) {
+    mediaEl = resolved.el;
+    bgRoot.replaceChildren(mediaEl);
+    configureNativeVideo(mediaEl);
+    attachReducedMotion(block, mediaEl, false);
+  } else if (resolved.kind === 'iframe') {
+    mediaEl = mountIframe(bgRoot, resolved.url);
+    isIframe = true;
+    attachReducedMotion(block, mediaEl, true);
+  } else if (resolved.kind === 'video' && resolved.url) {
+    mediaEl = mountVideo(bgRoot, resolved.url);
+    configureNativeVideo(mediaEl);
+    attachReducedMotion(block, mediaEl, false);
+  } else {
+    return false;
+  }
 
   block.classList.add('hero-event-has-video');
   return true;
@@ -71,23 +157,20 @@ export default function decorate(block) {
   const bgRoot = block.querySelector(':scope > div:first-child > div') || block.querySelector(':scope > div:first-child');
   const hasPicture = !!block.querySelector(':scope > div:first-child picture');
   const hasImg = !!block.querySelector(':scope > div:first-child img');
-  const hasVideo = bgRoot && setupBackgroundVideo(block, bgRoot);
+  const hasMotionBg = bgRoot && setupBackgroundMedia(block, bgRoot);
 
-  if (!hasPicture && !hasImg && !hasVideo) {
+  if (!hasPicture && !hasImg && !hasMotionBg) {
     block.classList.add('no-image');
   }
 
-  // Find all links in the content div and style as buttons
-  const contentDiv = block.querySelector(':scope > div:nth-child(2)');
-  if (contentDiv) {
-    const links = contentDiv.querySelectorAll('a');
-    links.forEach((link, index) => {
-      link.classList.add('button');
-      if (index === 0) {
-        link.classList.add('secondary'); // BUY NOW — white outlined
-      } else if (index === 1) {
-        link.classList.add('primary'); // LEARN MORE — red filled
-      }
-    });
-  }
+  const contentRows = [...block.querySelectorAll(':scope > div')].slice(1);
+  const links = contentRows.flatMap((row) => [...row.querySelectorAll('a')]);
+  links.forEach((link, index) => {
+    link.classList.add('button');
+    if (index === 0) {
+      link.classList.add('secondary');
+    } else if (index === 1) {
+      link.classList.add('primary');
+    }
+  });
 }
