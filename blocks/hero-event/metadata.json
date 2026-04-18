@@ -1,0 +1,11 @@
+{
+  "variantName": "hero-event",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-04-18T06:10:00.000Z",
+  "sourceContext": { "originUrl": "https://www.theglen.com/", "originPage": "homepage", "blockPosition": "top" },
+  "visualCharacteristics": { "colorScheme": "dark", "density": "spacious", "purpose": "event-hero", "imagePattern": "video-bg" },
+  "contentPattern": { "structure": "heading + subtitle + 2 CTAs", "buttonCount": 2, "imageCount": 0 },
+  "reuseGuidance": { "suitableFor": ["event landing pages", "race weekend promos"], "notSuitableFor": ["text-only pages", "product pages"] },
+  "usage": { "pagesUsing": ["/content/index"], "reuseCount": 1, "lastUsed": "2026-04-18T06:10:00.000Z" }
+}

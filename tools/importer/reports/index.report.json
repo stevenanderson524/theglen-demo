@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "url": "https://www.theglen.com/",
+  "path": "index",
+  "timestamp": "2026-04-18T06:51:36.057Z",
+  "title": "HOME | WATKINS GLEN INTERNATIONAL",
+  "template": "theglen-homepage",
+  "blocks": [
+    "hero-event",
+    "columns-icons",
+    "cards-tickets",
+    "cards-tickets",
+    "hero-banner",
+    "columns-callout",
+    "columns-callout",
+    "columns-callout",
+    "cards-venues",
+    "carousel-gallery",
+    "hero-cta"
+  ]
+}

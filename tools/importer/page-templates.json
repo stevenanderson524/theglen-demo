@@ -1,0 +1,164 @@
+{
+  "templates": [
+    {
+      "name": "theglen-homepage",
+      "urls": [
+        "https://www.theglen.com/"
+      ],
+      "description": "Watkins Glen International homepage with hero, ticket cards, event callouts, venue highlights, sponsor carousel, and newsletter signup",
+      "blocks": [
+        {
+          "name": "hero-event",
+          "instances": [
+            "#pg-2-0 .main-hero"
+          ]
+        },
+        {
+          "name": "columns-icons",
+          "instances": [
+            ".icon-container"
+          ]
+        },
+        {
+          "name": "cards-tickets",
+          "instances": [
+            "#pg-2-3 .ticket-cards-container",
+            "#pg-2-5 .ticket-cards-container"
+          ]
+        },
+        {
+          "name": "hero-banner",
+          "instances": [
+            "#pg-2-4 .tickets-section"
+          ]
+        },
+        {
+          "name": "columns-callout",
+          "instances": [
+            ".callout-container"
+          ]
+        },
+        {
+          "name": "cards-venues",
+          "instances": [
+            "#pg-2-9 .card-container"
+          ]
+        },
+        {
+          "name": "carousel-gallery",
+          "instances": [
+            ".image-slider-carousel"
+          ]
+        },
+        {
+          "name": "hero-cta",
+          "instances": [
+            ".ndms-newsletter_widget"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Hero",
+          "selector": "#pg-2-0",
+          "style": null,
+          "blocks": [
+            "hero-event"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Quick Links",
+          "selector": "#pg-2-1",
+          "style": "light",
+          "blocks": [
+            "columns-icons"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "NASCAR Intro",
+          "selector": "#pg-2-2",
+          "style": "light",
+          "blocks": [],
+          "defaultContent": [
+            ".tickets-section"
+          ]
+        },
+        {
+          "id": "section-4",
+          "name": "NASCAR Tickets",
+          "selector": "#pg-2-3",
+          "style": "light",
+          "blocks": [
+            "cards-tickets"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5",
+          "name": "IMSA Banner",
+          "selector": "#pg-2-4",
+          "style": "dark",
+          "blocks": [
+            "hero-banner"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6",
+          "name": "IMSA Tickets",
+          "selector": "#pg-2-5",
+          "style": "light",
+          "blocks": [
+            "cards-tickets"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7",
+          "name": "Callout Panels",
+          "selector": "#pg-2-6",
+          "style": "light",
+          "blocks": [
+            "columns-callout"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8",
+          "name": "Fan Hospitality",
+          "selector": "#pg-2-9",
+          "style": "navy-blue",
+          "blocks": [
+            "cards-venues"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-9",
+          "name": "Sponsors",
+          "selector": "#pg-2-10",
+          "style": null,
+          "blocks": [
+            "carousel-gallery"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-10",
+          "name": "Newsletter CTA",
+          "selector": "#pg-2-11",
+          "style": "dark",
+          "blocks": [
+            "hero-cta"
+          ],
+          "defaultContent": []
+        }
+      ]
+    }
+  ]
+}
