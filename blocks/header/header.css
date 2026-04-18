@@ -271,8 +271,17 @@ header nav .nav-tools {
   grid-area: tools;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
   white-space: nowrap;
+}
+
+/* EDS wraps tools links in .default-content-wrapper; keep row layout here (not on .nav-tools alone). */
+header nav .nav-tools .default-content-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 header nav .nav-tools p {
