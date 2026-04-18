@@ -4,6 +4,35 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+/** Secondary strip below main nav — matches live theglen.com (navy bar, flat links). */
+const SUBNAV_LINKS = [
+  { label: 'NASCAR WEEKEND', href: '/events/nascar-cup-series/' },
+  { label: 'IMSA WEEKEND', href: '/events/imsa/' },
+  { label: 'SCHEDULE A CALL', href: '#schedule-a-call' },
+  { label: 'SPECIAL OFFERS', href: '#special-offers' },
+  { label: 'EVENT CALENDAR', href: '/events/' },
+];
+
+function buildSubNav() {
+  const bar = document.createElement('div');
+  bar.className = 'header-subnav';
+  bar.setAttribute('aria-label', 'Quick links');
+
+  const inner = document.createElement('div');
+  inner.className = 'header-subnav-inner';
+
+  SUBNAV_LINKS.forEach((item) => {
+    const a = document.createElement('a');
+    a.className = 'header-subnav-link';
+    a.href = item.href;
+    a.textContent = item.label;
+    inner.append(a);
+  });
+
+  bar.append(inner);
+  return bar;
+}
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -166,6 +195,6 @@ export default async function decorate(block) {
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
-  navWrapper.append(nav);
+  navWrapper.append(nav, buildSubNav());
   block.append(navWrapper);
 }

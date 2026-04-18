@@ -1,9 +1,81 @@
+/* total fixed header stack — closer to theglen.com: tall white bar + navy secondary strip */
+:root {
+  /* slightly taller than boilerplate 64px to match WGI chrome */
+  --nav-height: 72px;
+  --header-subnav-height: 34px;
+}
+
+header {
+  height: auto;
+  min-height: calc(var(--nav-height) + var(--header-subnav-height));
+}
+
+/* Mobile: fixed header overlaps content unless main is offset */
+@media (width < 900px) {
+  main {
+    padding-top: calc(var(--nav-height) + var(--header-subnav-height));
+  }
+}
+
 /* header and nav layout */
 header .nav-wrapper {
-  background-color: #f5f5f5;
+  background-color: #fff;
   width: 100%;
   z-index: 2;
   position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 8%);
+}
+
+/* secondary sub-navigation strip (live site: full-width navy, white caps, no dividers) */
+header .header-subnav {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--header-subnav-height);
+  background-color: var(--brand-navy);
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+
+header .header-subnav-inner {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8px 12px;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 8px 16px;
+  font-family: var(--body-font-family);
+}
+
+@media (width >= 900px) {
+  header .header-subnav-inner {
+    padding: 8px 32px;
+    gap: 0;
+  }
+}
+
+header .header-subnav-link:any-link {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+header .header-subnav-link:any-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 header nav {
@@ -19,6 +91,8 @@ header nav {
   height: var(--nav-height);
   padding: 0 24px;
   font-family: var(--body-font-family);
+  background-color: #fff;
+  color: #1a1a1a;
 }
 
 header nav[aria-expanded='true'] {
@@ -72,7 +146,7 @@ header nav .nav-hamburger button {
   border: 0;
   border-radius: 0;
   padding: 0;
-  background-color: var(--background-color);
+  background-color: #fff;
   color: inherit;
   overflow: initial;
   text-overflow: initial;
@@ -170,13 +244,14 @@ header nav[aria-expanded='true'] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
-  font-size: var(--body-font-size-s);
+  font-size: 13px;
 }
 
 header nav .nav-sections ul > li {
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  color: #1a1a1a;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -244,10 +319,12 @@ header nav .nav-sections ul > li > ul > li {
     display: block;
     position: absolute;
     left: -24px;
-    width: 200px;
+    width: 220px;
     top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid rgb(0 0 0 / 10%);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
     white-space: initial;
   }
 
@@ -260,11 +337,23 @@ header nav .nav-sections ul > li > ul > li {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
+    border-bottom: 8px solid #fff;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
     padding: 8px 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li a:any-link {
+    color: var(--brand-navy);
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li a:hover {
+    color: var(--brand-red);
   }
 }
 
