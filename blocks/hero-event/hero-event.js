@@ -7,10 +7,16 @@
  */
 const VIDEO_EXT = /\.(mp4|webm)(\?|#|$)/i;
 
+/** DA / paste quirks: fullwidth solidus, site path without leading slash. */
+function normalizeMediaPath(s) {
+  return (s || '').trim().replace(/\uFF0F/g, '/');
+}
+
 /** Same-origin paths need optional Helix code base (non-root mounts). */
 function resolveVideoSrc(pathOrUrl) {
-  const u = pathOrUrl.trim();
+  let u = normalizeMediaPath(pathOrUrl);
   if (/^https?:\/\//i.test(u)) return u;
+  if (/^content\/media\//i.test(u) && !u.startsWith('/')) u = `/${u}`;
   const base = (window.hlx?.codeBasePath ?? '').replace(/\/$/, '');
   if (u.startsWith('/')) return `${base}${u}`;
   if (u.startsWith('./')) return `${base}/${u.slice(2)}`;
@@ -24,10 +30,11 @@ function normalizeText(t) {
 /** Absolute https(s) or same-origin path starting with `/` or `./` / `../` ending in .mp4/.webm */
 function isVideoUrl(url) {
   if (typeof url !== 'string' || !VIDEO_EXT.test(url)) return false;
-  const u = url.trim();
+  const u = normalizeMediaPath(url);
   if (/^https?:\/\//i.test(u)) return true;
   if (u.startsWith('/')) return true;
   if (u.startsWith('./') || u.startsWith('../')) return true;
+  if (/^content\/media\//i.test(u)) return true;
   return false;
 }
 
@@ -55,11 +62,13 @@ function findAdobePlayerUrlInText(text) {
 }
 
 function findVideoUrlInText(text) {
-  const norm = normalizeText(text);
-  if (isVideoUrl(norm)) return norm;
+  const norm = normalizeText(text).replace(/\uFF0F/g, '/');
+  if (isVideoUrl(norm)) return normalizeMediaPath(norm);
+  const contentMedia = norm.match(/\bcontent\/media\/[^\s<>"']+\.(?:mp4|webm)(?:[^\s<>"']*)?/i);
+  if (contentMedia && isVideoUrl(contentMedia[0])) return normalizeMediaPath(`/${contentMedia[0].replace(/^\//, '')}`);
   const re = /https?:\/\/[^\s<>"']+\.(?:mp4|webm)(?:[^\s<>"']*)?|(?:\.\.\/|\.\/|\/)[^\s<>"']*\.(?:mp4|webm)(?:[^\s<>"']*)?/i;
   const m = norm.match(re);
-  return m && isVideoUrl(m[0]) ? m[0].trim() : '';
+  return m && isVideoUrl(m[0]) ? normalizeMediaPath(m[0].trim()) : '';
 }
 
 /**
