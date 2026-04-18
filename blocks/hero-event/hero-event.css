@@ -36,19 +36,19 @@
   z-index: 0;
 }
 
-.hero-event > div:first-child picture {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-event > div:first-child picture > img,
-.hero-event > div:first-child > img {
+/* stylelint-disable-next-line no-descending-specificity */
+.hero-event > div:first-child img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.hero-event > div:first-child picture {
+  position: absolute;
+  inset: 0;
 }
 
 /* text content from second child */
@@ -100,7 +100,8 @@
 }
 
 /* first link = red (BUY NOW / primary) */
-.hero-event > div:nth-child(2) p:nth-of-type(3) a {
+.hero-event > div:nth-child(2) p:nth-of-type(3) a,
+.hero-event > div:nth-child(2) p:nth-of-type(3) a:hover {
   background: var(--brand-red);
 }
 
@@ -109,7 +110,9 @@
 }
 
 /* second link = navy (LEARN MORE / secondary) */
-.hero-event > div:nth-child(2) p:nth-of-type(4) a {
+/* stylelint-disable-next-line no-descending-specificity */
+.hero-event > div:nth-child(2) p:nth-of-type(4) a,
+.hero-event > div:nth-child(2) p:nth-of-type(4) a:hover {
   background: var(--brand-navy);
 }
 
