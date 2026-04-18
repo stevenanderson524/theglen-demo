@@ -81,8 +81,8 @@
   max-width: 700px;
 }
 
-/* CTA buttons */
-.hero-event > div:nth-child(2) p a {
+/* CTA buttons — target EDS .button class applied by framework */
+.hero-event a.button:any-link {
   display: block;
   width: 100%;
   max-width: 400px;
@@ -91,33 +91,47 @@
   text-transform: uppercase;
   font-weight: 700;
   color: #fff;
+  border: 2px solid #fff;
   border-radius: 2px;
   text-decoration: none;
   font-size: var(--body-font-size-s);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   text-align: center;
   box-sizing: border-box;
+  background: transparent;
 }
 
-/* first link = red (BUY NOW / primary) */
-.hero-event > div:nth-child(2) p:nth-of-type(3) a,
-.hero-event > div:nth-child(2) p:nth-of-type(3) a:hover {
+.hero-event a.button:hover {
+  background: rgb(255 255 255 / 20%);
+  border-color: #fff;
+  color: #fff;
+}
+
+/* primary button = red filled */
+.hero-event a.button.primary:any-link {
   background: var(--brand-red);
+  border-color: var(--brand-red);
 }
 
-.hero-event > div:nth-child(2) p:nth-of-type(3) a:hover {
+.hero-event a.button.primary:hover {
   background: var(--brand-red-hover);
+  border-color: var(--brand-red-hover);
 }
 
-/* second link = navy (LEARN MORE / secondary) */
-/* stylelint-disable-next-line no-descending-specificity */
-.hero-event > div:nth-child(2) p:nth-of-type(4) a,
-.hero-event > div:nth-child(2) p:nth-of-type(4) a:hover {
-  background: var(--brand-navy);
+/* secondary button = white outlined */
+.hero-event a.button.secondary:any-link {
+  background: transparent;
+  border-color: #fff;
+  color: #fff;
 }
 
-.hero-event > div:nth-child(2) p:nth-of-type(4) a:hover {
-  background: var(--brand-navy-hover);
+.hero-event a.button.secondary:hover {
+  background: rgb(255 255 255 / 20%);
+}
+
+/* button wrappers */
+.hero-event p.button-wrapper {
+  margin: 8px auto;
 }
 
 /* fallback when no image — use committed hero-bg.jpg */
@@ -135,7 +149,7 @@
     font-size: 72px;
   }
 
-  .hero-event > div:nth-child(2) p a {
+  .hero-event a.button:any-link {
     display: inline-block;
     width: auto;
     min-width: 200px;

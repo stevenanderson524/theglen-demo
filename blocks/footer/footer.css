@@ -1,5 +1,8 @@
+/* footer — The Glen site footer */
+
 footer {
-  background-color: var(--light-color);
+  background-color: var(--brand-navy);
+  color: #fff;
   font-size: var(--body-font-size-xs);
 }
 
@@ -10,7 +13,62 @@ footer .footer > div {
 }
 
 footer .footer p {
+  margin: 0 0 8px;
+}
+
+footer .footer a:any-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+footer .footer a:hover {
+  color: var(--brand-red);
+}
+
+/* logo — constrain size */
+footer .footer img {
+  max-width: 200px;
+  height: auto;
+}
+
+/* social links — inline horizontal, no bullets */
+footer .footer > div:first-child ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: flex;
+  gap: 16px;
+}
+
+footer .footer > div:first-child ul li {
   margin: 0;
+}
+
+footer .footer > div:first-child ul a {
+  font-weight: 600;
+}
+
+/* legal links */
+footer .footer > div:nth-child(2) ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+footer .footer > div:nth-child(2) ul li {
+  margin: 0;
+}
+
+footer .footer > div:nth-child(2) ul a {
+  font-size: var(--body-font-size-xs);
+  color: rgb(255 255 255 / 75%);
+}
+
+footer .footer > div:nth-child(2) ul a:hover {
+  color: #fff;
 }
 
 @media (width >= 900px) {
