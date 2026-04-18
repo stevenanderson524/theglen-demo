@@ -23,7 +23,12 @@ export async function loadFragment(path) {
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
       const main = document.createElement('main');
-      main.innerHTML = await resp.text();
+      const html = await resp.text();
+      // Local AEM dev server may wrap .plain.html in a full document (head scripts, meta, etc.).
+      // Assigning that string to innerHTML would inject those nodes into the fragment and break
+      // consumers (e.g. header nav) that expect only authored body markup.
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      main.innerHTML = doc.body ? doc.body.innerHTML : html;
 
       // reset base path for media to fragment base
       const resetAttributeBase = (tag, attr) => {
