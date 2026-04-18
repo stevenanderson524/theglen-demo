@@ -1,0 +1,23 @@
+/* Video embed — responsive native player */
+
+.video-embed {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.video-embed .video-embed-player {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(70vh, 900px);
+  border-radius: 2px;
+  background: #000;
+}
+
+@media (width >= 900px) {
+  .video-embed {
+    padding: 0 32px;
+  }
+}

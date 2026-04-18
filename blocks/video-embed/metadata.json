@@ -1,0 +1,11 @@
+{
+  "variantName": "video-embed",
+  "baseBlock": "embed",
+  "version": "1.0.0",
+  "created": "2026-04-18T12:00:00.000Z",
+  "sourceContext": { "originUrl": "https://www.theglen.com/", "originPage": "homepage", "blockPosition": "any" },
+  "visualCharacteristics": { "colorScheme": "neutral", "density": "minimal", "purpose": "native-video", "imagePattern": "none" },
+  "contentPattern": { "structure": "single video URL (link or plain text)", "buttonCount": 0, "imageCount": 0 },
+  "reuseGuidance": { "suitableFor": ["MP4/WebM URLs from CDN or site"], "notSuitableFor": ["YouTube without iframe block"] },
+  "usage": { "pagesUsing": [], "reuseCount": 0, "lastUsed": "2026-04-18T12:00:00.000Z" }
+}
