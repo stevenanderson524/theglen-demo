@@ -10,20 +10,29 @@
 .cards-venues > ul > li {
   border: 1px solid #dadada;
   background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
 }
 
 .cards-venues .cards-venues-card-body {
   margin: 16px;
+  flex: 1;
 }
 
 .cards-venues .cards-venues-card-image {
   line-height: 0;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 24px;
 }
 
 .cards-venues > ul > li img {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  max-height: 140px;
+  object-fit: contain;
 }
 
 .cards-venues .cards-venues-card-body h3 {
