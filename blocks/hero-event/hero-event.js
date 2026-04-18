@@ -1,7 +1,9 @@
 /**
- * Hero background: first row = image (picture/img), direct MP4/WebM URL, or Adobe AEM Assets
- * `/adobe/assets/.../play` URL (Dynamic Media player page — embedded as iframe, not <video>).
- * Use absolute https URLs (DAM / CDN); EDS typically does not host large video binaries in Git.
+ * Hero background — first row:
+ * - picture / img (unchanged)
+ * - direct MP4/WebM: `https://…` **or** site path `/content/media/….mp4` (same-origin file in Git / CDN)
+ * - Adobe `…/adobe/assets/…/play` → static poster from asset base URL (not OpenAPI—browser cannot call APIs with secrets).
+ * - **OpenAPI** does not replace a video `src`; use a build/proxy that turns a URN into a short-lived HTTPS URL, then paste that URL here.
  */
 const VIDEO_EXT = /\.(mp4|webm)(\?|#|$)/i;
 
@@ -9,11 +11,17 @@ function normalizeText(t) {
   return (t || '').replace(/[\u200b-\u200d\ufeff]/g, '').replace(/\s+/g, ' ').trim();
 }
 
+/** Absolute https(s) or same-origin path starting with `/` or `./` / `../` ending in .mp4/.webm */
 function isVideoUrl(url) {
-  return typeof url === 'string' && /^https?:\/\//i.test(url) && VIDEO_EXT.test(url);
+  if (typeof url !== 'string' || !VIDEO_EXT.test(url)) return false;
+  const u = url.trim();
+  if (/^https?:\/\//i.test(u)) return true;
+  if (u.startsWith('/')) return true;
+  if (u.startsWith('./') || u.startsWith('../')) return true;
+  return false;
 }
 
-/** Adobe delivery “player” page (not a raw file); must use iframe. */
+/** Adobe “Universal” player page — not a file URL; use base asset URL as poster image instead. */
 function isAdobeAssetPlayerUrl(url) {
   if (!url || typeof url !== 'string') return false;
   const u = url.trim();
@@ -21,6 +29,11 @@ function isAdobeAssetPlayerUrl(url) {
   if (!/adobeaemcloud\.com/i.test(u)) return false;
   if (!/\/adobe\/assets\//i.test(u)) return false;
   return /\/play(?:\?|#|$)/i.test(u);
+}
+
+/** Base delivery URL (strip `/play`) — often returns a raster preview suitable as hero poster. */
+function adobePlayUrlToPosterBase(url) {
+  return url.trim().replace(/\/play(?:\?[^#]*)?(#.*)?$/i, '');
 }
 
 function findAdobePlayerUrlInText(text) {
@@ -34,13 +47,15 @@ function findAdobePlayerUrlInText(text) {
 function findVideoUrlInText(text) {
   const norm = normalizeText(text);
   if (isVideoUrl(norm)) return norm;
-  const re = /https?:\/\/[^\s<>"']+\.(?:mp4|webm)(?:[^\s<>"']*)?/i;
+  const re = /https?:\/\/[^\s<>"']+\.(?:mp4|webm)(?:[^\s<>"']*)?|(?:\.\.\/|\.\/|\/)[^\s<>"']*\.(?:mp4|webm)(?:[^\s<>"']*)?/i;
   const m = norm.match(re);
   return m && isVideoUrl(m[0]) ? m[0].trim() : '';
 }
 
 /**
- * @returns {{ kind: 'video', url?: string, el?: HTMLVideoElement } | { kind: 'iframe', url: string } | null}
+ * @returns {{ kind: 'video', url?: string, el?: HTMLVideoElement }
+ *  | { kind: 'adobePoster', url: string }
+ *  | null}
  */
 function resolveBackgroundMedia(bgRoot) {
   const existing = bgRoot.querySelector('video');
@@ -50,31 +65,30 @@ function resolveBackgroundMedia(bgRoot) {
 
   const links = [...bgRoot.querySelectorAll('a[href]')];
   const hrefs = links.map((a) => (a.getAttribute('href') || '').trim()).filter(Boolean);
-  const adobeLink = hrefs.find(isAdobeAssetPlayerUrl);
-  if (adobeLink) return { kind: 'iframe', url: adobeLink };
   const mp4Link = hrefs.find(isVideoUrl);
   if (mp4Link) return { kind: 'video', url: mp4Link };
+  const adobePlay = hrefs.find(isAdobeAssetPlayerUrl);
+  if (adobePlay) return { kind: 'adobePoster', url: adobePlay };
 
   const raw = bgRoot.textContent;
-  const adobe = findAdobePlayerUrlInText(raw);
-  if (adobe) return { kind: 'iframe', url: adobe };
   const vid = findVideoUrlInText(raw);
   if (vid) return { kind: 'video', url: vid };
+  const adobe = findAdobePlayerUrlInText(raw);
+  if (adobe) return { kind: 'adobePoster', url: adobe };
 
   return null;
 }
 
-function mountIframe(bgRoot, url) {
-  const iframe = document.createElement('iframe');
-  iframe.className = 'hero-event-bg-embed';
-  iframe.src = url;
-  iframe.setAttribute('title', 'Hero background video');
-  iframe.setAttribute('aria-hidden', 'true');
-  iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-  iframe.setAttribute('loading', 'eager');
-  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-  bgRoot.replaceChildren(iframe);
-  return iframe;
+function mountPosterImage(bgRoot, src) {
+  const img = document.createElement('img');
+  img.className = 'hero-event-bg-poster';
+  img.src = src;
+  img.alt = '';
+  img.setAttribute('aria-hidden', 'true');
+  img.decoding = 'async';
+  img.fetchPriority = 'high';
+  bgRoot.replaceChildren(img);
+  return img;
 }
 
 function mountVideo(bgRoot, url) {
@@ -97,7 +111,9 @@ function configureNativeVideo(video) {
   video.removeAttribute('controls');
 }
 
-function attachReducedMotion(block, mediaEl, isIframe) {
+function attachReducedMotion(block, mediaEl, isVideo) {
+  if (!isVideo) return;
+
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const onlyMotionBg = () => !block.querySelector(':scope > div:first-child picture')
     && !block.querySelector(':scope > div:first-child img');
@@ -105,46 +121,37 @@ function attachReducedMotion(block, mediaEl, isIframe) {
   const sync = () => {
     const motionOnly = onlyMotionBg();
     if (mq.matches) {
-      if (!isIframe) {
-        mediaEl.pause?.();
-        mediaEl.removeAttribute?.('autoplay');
-      }
+      mediaEl.pause?.();
+      mediaEl.removeAttribute?.('autoplay');
       mediaEl.style.display = 'none';
       if (motionOnly) block.classList.add('no-image');
     } else {
       mediaEl.style.display = '';
-      if (!isIframe) {
-        mediaEl.setAttribute('autoplay', '');
-        mediaEl.play?.().catch(() => {});
-      }
+      mediaEl.setAttribute('autoplay', '');
       if (motionOnly) block.classList.remove('no-image');
+      mediaEl.play?.().catch(() => {});
     }
   };
   sync();
   mq.addEventListener('change', sync);
 }
 
-/** First row: picture/img, <video>, MP4/WebM URL, or Adobe Assets …/play URL. */
+/** First row: picture/img, <video>, MP4/WebM URL, or Adobe …/play (poster image fallback). */
 function setupBackgroundMedia(block, bgRoot) {
   const resolved = resolveBackgroundMedia(bgRoot);
   if (!resolved) return false;
 
-  let mediaEl;
-  let isIframe = false;
-
   if (resolved.kind === 'video' && resolved.el) {
-    mediaEl = resolved.el;
-    bgRoot.replaceChildren(mediaEl);
-    configureNativeVideo(mediaEl);
-    attachReducedMotion(block, mediaEl, false);
-  } else if (resolved.kind === 'iframe') {
-    mediaEl = mountIframe(bgRoot, resolved.url);
-    isIframe = true;
-    attachReducedMotion(block, mediaEl, true);
+    bgRoot.replaceChildren(resolved.el);
+    configureNativeVideo(resolved.el);
+    attachReducedMotion(block, resolved.el, true);
   } else if (resolved.kind === 'video' && resolved.url) {
-    mediaEl = mountVideo(bgRoot, resolved.url);
-    configureNativeVideo(mediaEl);
-    attachReducedMotion(block, mediaEl, false);
+    const video = mountVideo(bgRoot, resolved.url);
+    configureNativeVideo(video);
+    attachReducedMotion(block, video, true);
+  } else if (resolved.kind === 'adobePoster') {
+    const base = adobePlayUrlToPosterBase(resolved.url);
+    mountPosterImage(bgRoot, base);
   } else {
     return false;
   }

@@ -63,17 +63,6 @@
   pointer-events: none;
 }
 
-/* Adobe AEM Assets /play = HTML player — embed full-bleed (not <video src>) */
-.hero-event > div:first-child iframe.hero-event-bg-embed {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-  pointer-events: none;
-}
-
 /* text / CTA rows (second row onward — DA may use multiple rows) */
 .hero-event > div:not(:first-child) {
   position: relative;
