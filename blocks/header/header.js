@@ -1,22 +1,22 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
-/** Secondary strip below main nav — matches live theglen.com (navy bar, flat links). */
+/** Secondary strip below main nav — matches live theglen.com “Trending Navigation”. */
 const SUBNAV_LINKS = [
-  { label: 'NASCAR WEEKEND', href: '/events/nascar-cup-series/' },
-  { label: 'IMSA WEEKEND', href: '/events/imsa/' },
-  { label: 'SCHEDULE A CALL', href: '#schedule-a-call' },
-  { label: 'SPECIAL OFFERS', href: '#special-offers' },
-  { label: 'EVENT CALENDAR', href: '/events/' },
+  { label: 'NASCAR WEEKEND', href: 'https://www.theglen.com/events/nascar-cup-series/' },
+  { label: 'IMSA WEEKEND', href: 'https://www.theglen.com/events/sahlens-six-hours-of-the-glen/' },
+  { label: 'SCHEDULE A CALL', href: 'https://hello.nascar.com/calendar/team/t/672' },
+  { label: 'SPECIAL OFFERS', href: 'https://www.theglen.com/special-offers/' },
+  { label: 'Event Calendar', href: 'https://www.theglen.com/calendar/' },
 ];
 
 function buildSubNav() {
-  const bar = document.createElement('div');
+  const bar = document.createElement('nav');
   bar.className = 'header-subnav';
-  bar.setAttribute('aria-label', 'Quick links');
+  bar.setAttribute('aria-label', 'Trending Navigation');
 
   const inner = document.createElement('div');
   inner.className = 'header-subnav-inner';
@@ -101,12 +101,14 @@ function toggleAllNavSections(sections, expanded = false) {
  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
+  const wasExpanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
-  nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  document.body.style.overflowY = (wasExpanded || isDesktop.matches) ? '' : 'hidden';
+  nav.setAttribute('aria-expanded', wasExpanded ? 'false' : 'true');
+  toggleAllNavSections(navSections, wasExpanded || isDesktop.matches ? 'false' : 'true');
+  const menuOpen = nav.getAttribute('aria-expanded') === 'true';
+  button.setAttribute('aria-expanded', menuOpen ? 'true' : 'false');
+  button.setAttribute('aria-label', menuOpen ? 'Close main navigation' : 'Main navigation');
   // enable nav dropdown keyboard accessibility
   if (navSections) {
     const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -126,7 +128,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 
   // enable menu collapse on escape keypress
-  if (!expanded || isDesktop.matches) {
+  if (!wasExpanded || isDesktop.matches) {
     // collapse menu on escape press
     window.addEventListener('keydown', closeOnEscape);
     // collapse menu on focus lost
@@ -151,6 +153,7 @@ export default async function decorate(block) {
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
+  nav.setAttribute('aria-label', 'Site header');
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools'];
@@ -168,6 +171,8 @@ export default async function decorate(block) {
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
+    navSections.setAttribute('role', 'navigation');
+    navSections.setAttribute('aria-label', 'Primary Menu');
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
       navSection.addEventListener('click', () => {
@@ -183,7 +188,7 @@ export default async function decorate(block) {
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-expanded="false" aria-label="Main navigation">
       <span class="nav-hamburger-icon"></span>
     </button>`;
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
@@ -193,8 +198,30 @@ export default async function decorate(block) {
   toggleMenu(nav, navSections, false);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
+  const toolsWrap = nav.querySelector('.nav-tools .default-content-wrapper');
+  if (toolsWrap) {
+    const chatBtn = document.createElement('button');
+    chatBtn.type = 'button';
+    chatBtn.className = 'nav-chat-toggle';
+    chatBtn.setAttribute('aria-label', 'open chat');
+    chatBtn.innerHTML = '<span class="icon icon-chat"></span>';
+    chatBtn.addEventListener('click', () => {
+      nav.querySelector('a.header-chat-link')?.click();
+    });
+    toolsWrap.append(chatBtn);
+    decorateIcons(chatBtn);
+  }
+
+  const mainEl = document.querySelector('main');
+  if (mainEl && !mainEl.id) mainEl.id = 'main';
+
+  const skip = document.createElement('a');
+  skip.className = 'header-skip';
+  skip.href = '#main';
+  skip.textContent = 'Skip to content';
+
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav, buildSubNav());
-  block.append(navWrapper);
+  block.append(skip, navWrapper);
 }

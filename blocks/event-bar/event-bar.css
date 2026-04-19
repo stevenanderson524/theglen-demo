@@ -1,0 +1,104 @@
+/* Event Bar - row of icon-link cards */
+.event-bar {
+  --event-bar-bg: #fff;
+  --event-bar-text: #004174;
+  --event-bar-border: #e2e2e2;
+  --event-bar-hover-bg: #0664a8;
+  --event-bar-hover-text: #fff;
+
+  background: var(--event-bar-bg);
+  color: var(--event-bar-text);
+  text-align: center;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: var(--grid-container-width, 83.4%);
+  margin: 0 auto;
+}
+
+.event-bar > div {
+  width: 16%;
+  min-width: 120px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.event-bar > div > a {
+  color: var(--event-bar-text);
+  border: 1px solid var(--event-bar-border);
+  border-radius: 6px;
+  margin: 20px auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.event-bar > div > a:hover {
+  background-color: var(--event-bar-hover-bg);
+  color: var(--event-bar-hover-text);
+  border-color: var(--event-bar-hover-bg);
+}
+
+.event-bar > div > a:hover .event-bar-icon svg {
+  filter: brightness(0) invert(1);
+}
+
+.event-bar > div > a:hover .event-bar-label {
+  color: var(--event-bar-hover-text);
+}
+
+.event-bar .event-bar-icon {
+  padding-top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event-bar .event-bar-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.event-bar .event-bar-icon img {
+  width: 61px;
+  height: 61px;
+}
+
+.event-bar .event-bar-label {
+  width: 100px;
+  font-weight: 900;
+  font-size: 0.857em;
+  line-height: normal;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: normal;
+  padding: 10px 0 0;
+}
+
+/* Reset EDS button styles on links inside the event bar */
+main .event-bar .button-container { display: inline; }
+main .event-bar a.button:any-link {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  white-space: normal;
+}
+
+@media (max-width: 768px) {
+  .event-bar > div {
+    width: 33%;
+    min-width: 100px;
+  }
+}
