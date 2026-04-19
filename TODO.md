@@ -21,6 +21,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 - [x] **Hero-event block refactor** — Adobe Assets video source resolution, static poster image support, URL normalization (6 local commits, now on main)
 - [x] **Header sub-nav block** — initial implementation committed (`bfcc1fa`)
 - [x] **Hospitality cards invisible in navy-blue section** — fixed in `5f6911d`. Root cause was broader than just the LEARN MORE button: section-scoped rules in `styles.css` (`main .section.navy-blue h3, p, a:any-link` at specificity (0,2,2)) were cascading `color: #fff` onto `h3`, `p`, and `a` inside the Fan Hospitality cards, making titles and descriptions invisible too. Fix bumped block selectors to `main .section .cards-venues .cards-venues-card-body` (specificity (0,3,2)) and added `background-color: transparent` on `a.button.secondary` to neutralize `decorateButtons` from `scripts.js`.
+- [x] **Sponsor carousel partner label** — `sponsor-carousel` block added from Slicc output; block name fixed via DA MCP, renders correctly
 - [x] **Footer rebuild** — content authored in DA via MCP (`stevenanderson524/theglen-demo/footer.html`): social icon links, App Store/Google Play buttons, NASCAR network links, utility row, legal strip (© 2026), logo repositioned to bottom. Icons at `icons/icon-facebook.svg`, `icons/icon-x.svg`, `icons/icon-instagram.svg`. CSS rewritten using `.default-content-wrapper` selectors. `footer.js` updated to call `decorateIcons` after fragment injection.
 
 ---
@@ -78,10 +79,6 @@ Verify the uncommitted header/nav changes on preview, then commit. May happen in
 **Tool:** DA MCP (icon references) + Cursor Agent (rendering)  
 **Files:** `blocks/columns-icons/*`  
 Currently text-only labels; theglen.com has icons above each label.
-
-### 7. Sponsor carousel partner label
-**Tool:** Cursor Agent (CSS)  
-Partner name currently renders as gray overlay box. Should be a clean label below the image, or hidden entirely.
 
 ### 8. Hero rotating carousel
 **Tool:** Cursor Agent (new block or extend existing) + DA MCP (slide content)  
