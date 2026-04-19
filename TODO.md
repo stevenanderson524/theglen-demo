@@ -22,6 +22,14 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 - [x] **Header sub-nav block** — initial implementation committed (`bfcc1fa`)
 - [x] **Hospitality cards invisible in navy-blue section** — fixed in `5f6911d`. Root cause was broader than just the LEARN MORE button: section-scoped rules in `styles.css` (`main .section.navy-blue h3, p, a:any-link` at specificity (0,2,2)) were cascading `color: #fff` onto `h3`, `p`, and `a` inside the Fan Hospitality cards, making titles and descriptions invisible too. Fix bumped block selectors to `main .section .cards-venues .cards-venues-card-body` (specificity (0,3,2)) and added `background-color: transparent` on `a.button.secondary` to neutralize `decorateButtons` from `scripts.js`.
 - [x] **Sponsor carousel partner label** — `sponsor-carousel` block added from Slicc output; block name fixed via DA MCP, renders correctly
+- [x] **5 Slicc blocks installed** — `event-bar`, `ticket-cards`, `experience-cards`, `callouts`, `newsletter` added to `blocks/`; CSS tokens (`--color-wgi-navy` → `--brand-navy`, `--color-wgi-red` → `--brand-red`) replaced throughout
+- [x] **Block renames in DA** — `columns-icons` → `event-bar`, `cards-tickets` → `ticket-cards`, `columns-callout` → `callouts`, `hero-cta` → `newsletter` (all via DA MCP on homepage)
+- [x] **slicc-staging removed** — `blocks/slicc-staging/` deleted from repo; all needed blocks already in proper directories
+- [x] **Orphaned block dirs removed** — `cards-tickets`, `carousel-gallery`, `columns-callout`, `columns-icons`, `hero-cta` removed; `cards-venues` retained (still active in DA)
+- [x] **Sidekick config** — `tools/sidekick/config.json` with DA edit button wired to `da.live/edit#/stevenanderson524/theglen-demo{{pathname}}`
+- [x] **DA live preview in scripts.js** — `dapreview.js` import added at bottom of `scripts/scripts.js`
+- [x] **robots.txt** — `Disallow: /` added to repo root
+- [x] **DA Library block picker** — 7 block example docs created under `library/blocks/` (hero-event, event-bar, ticket-cards, callouts, newsletter, hospitality-cards, sponsor-carousel); `/.da/config` wired with `blocks` key pointing to library sheet
 - [x] **Footer rebuild** — content authored in DA via MCP (`stevenanderson524/theglen-demo/footer.html`): social icon links, App Store/Google Play buttons, NASCAR network links, utility row, legal strip (© 2026), logo repositioned to bottom. Icons at `icons/icon-facebook.svg`, `icons/icon-x.svg`, `icons/icon-instagram.svg`. CSS rewritten using `.default-content-wrapper` selectors. `footer.js` updated to call `decorateIcons` after fragment injection.
 
 ---
