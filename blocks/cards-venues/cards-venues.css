@@ -49,7 +49,16 @@
   line-height: 1.5;
 }
 
-.cards-venues .cards-venues-card-body a {
+main .section .cards-venues .cards-venues-card-body h3 {
+  color: var(--brand-navy);
+}
+
+main .section .cards-venues .cards-venues-card-body p {
+  color: #000;
+}
+
+main .section .cards-venues .cards-venues-card-body a:any-link,
+main .section .cards-venues .cards-venues-card-body a.button:any-link {
   display: inline-block;
   padding: 8px 20px;
   font-size: 13px;
@@ -58,11 +67,13 @@
   text-decoration: none;
   border: 2px solid var(--brand-navy);
   color: var(--brand-navy);
+  background-color: transparent;
   border-radius: 2px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.cards-venues .cards-venues-card-body a:hover {
-  background: var(--brand-navy);
+main .section .cards-venues .cards-venues-card-body a:any-link:hover,
+main .section .cards-venues .cards-venues-card-body a.button:any-link:hover {
+  background-color: var(--brand-navy);
   color: #fff;
 }
