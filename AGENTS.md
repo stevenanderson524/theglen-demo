@@ -119,6 +119,10 @@ Pattern for dropdown triggers in the nav document:
 
 EDS `decorateIcons` expects SVG files at `/icons/icon-{name}.svg` — the `icon-` prefix is added automatically. Name files `icon-facebook.svg` not `facebook.svg`.
 
+### DA MCP cannot create spreadsheets
+
+`da_create_source` only creates documents. Spreadsheets must be created manually in the DA browser UI at `da.live/sheet#/{org}/{site}/{path}` or by uploading an xlsx file. Affects anything that needs to be served as `.json`: `library/blocks`, `query-index`, metadata sheets, etc.
+
 ---
 
 ## 🔍 Debugging Checklist
