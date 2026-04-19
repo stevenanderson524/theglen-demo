@@ -49,15 +49,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 
 ## 🔥 Active Priority Queue
 
-### 1. Newsletter section
-**Tool:** DA MCP (content) + Cursor Agent (form styling)  
-**Files:** Homepage doc in DA, new/updated section block
-
-Changes:
-- [ ] Replace "Sign Up" link with actual form fields: First Name, Last Name, Email, reCAPTCHA, red Sign Up button
-- [ ] Background: full-bleed aerial drone photo (not dark navy + panorama)
-
-### 2. Footer rebuild (biggest visual win remaining)
+### 1. Footer rebuild (biggest visual win remaining)
 **Tool:** DA MCP (content) + Cursor Agent (styling)  
 **Files:** Footer fragment in DA, `blocks/footer/footer.css`
 
@@ -67,6 +59,14 @@ Changes:
 - [ ] NASCAR network legal strip: Copyright, Do Not Sell, Privacy Policy, AdChoices, Manage Cookies, Accessibility, Careers
 - [ ] NASCAR network links: NASCAR Kids, NASCAR Latino, NASCAR Tracks App, Official Travel Packages, Shop
 - [ ] Logo position moved to bottom of footer (currently top)
+
+### 2. Newsletter section
+**Tool:** DA MCP (content) + Cursor Agent (form styling)  
+**Files:** Homepage doc in DA, new/updated section block
+
+Changes:
+- [ ] Replace "Sign Up" link with actual form fields: First Name, Last Name, Email, reCAPTCHA, red Sign Up button
+- [ ] Background: full-bleed aerial drone photo (not dark navy + panorama)
 
 ### 3. Header right-side icons
 **Tool:** Cursor Agent  
