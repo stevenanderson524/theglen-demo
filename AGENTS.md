@@ -115,6 +115,10 @@ Pattern for dropdown triggers in the nav document:
 <p><strong>Nav Item</strong></p>
 ```
 
+### EDS Icon Naming
+
+EDS `decorateIcons` expects SVG files at `/icons/icon-{name}.svg` — the `icon-` prefix is added automatically. Name files `icon-facebook.svg` not `facebook.svg`.
+
 ---
 
 ## 🔍 Debugging Checklist
