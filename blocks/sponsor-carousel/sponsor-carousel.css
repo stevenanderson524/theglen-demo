@@ -1,0 +1,98 @@
+/* Sponsor Carousel Block */
+.block-content:has(> .sponsor-carousel),
+main > div:has(> .sponsor-carousel) {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.sponsor-carousel {
+  text-align: center;
+}
+
+/* Header (Ticketmaster logo) */
+.sponsor-carousel .sponsor-header {
+  margin-bottom: 24px;
+}
+
+.sponsor-carousel .sponsor-header img {
+  max-width: 220px;
+  height: auto;
+  display: inline-block;
+}
+
+/* Carousel container */
+.sponsor-carousel .carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Arrow buttons */
+.sponsor-carousel .carousel-arrow {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: border-color 0.2s, color 0.2s;
+  padding: 0;
+}
+
+.sponsor-carousel .carousel-arrow:hover {
+  border-color: var(--brand-navy, #004174);
+  color: var(--brand-navy, #004174);
+}
+
+/* Viewport */
+.sponsor-carousel .carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Track */
+.sponsor-carousel .carousel-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.4s ease;
+}
+
+/* Sponsor card */
+.sponsor-carousel .sponsor-card {
+  flex-shrink: 0;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 16px;
+  min-height: 120px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.sponsor-carousel .sponsor-card img {
+  max-width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+  display: block;
+}
+
+.sponsor-carousel .sponsor-card .sponsor-name {
+  font-size: 11px;
+  color: #666;
+  margin-top: 8px;
+  text-align: center;
+  line-height: 1.2;
+}
