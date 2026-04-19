@@ -21,6 +21,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 - [x] **Hero-event block refactor** — Adobe Assets video source resolution, static poster image support, URL normalization (6 local commits, now on main)
 - [x] **Header sub-nav block** — initial implementation committed (`bfcc1fa`)
 - [x] **Hospitality cards invisible in navy-blue section** — fixed in `5f6911d`. Root cause was broader than just the LEARN MORE button: section-scoped rules in `styles.css` (`main .section.navy-blue h3, p, a:any-link` at specificity (0,2,2)) were cascading `color: #fff` onto `h3`, `p`, and `a` inside the Fan Hospitality cards, making titles and descriptions invisible too. Fix bumped block selectors to `main .section .cards-venues .cards-venues-card-body` (specificity (0,3,2)) and added `background-color: transparent` on `a.button.secondary` to neutralize `decorateButtons` from `scripts.js`.
+- [x] **Footer rebuild** — content authored in DA via MCP (`stevenanderson524/theglen-demo/footer.html`): social icon links, App Store/Google Play buttons, NASCAR network links, utility row, legal strip (© 2026), logo repositioned to bottom. Icons at `icons/icon-facebook.svg`, `icons/icon-x.svg`, `icons/icon-instagram.svg`. CSS rewritten using `.default-content-wrapper` selectors. `footer.js` updated to call `decorateIcons` after fragment injection.
 
 ---
 
@@ -49,18 +50,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 
 ## 🔥 Active Priority Queue
 
-### 1. Footer rebuild (biggest visual win remaining)
-**Tool:** DA MCP (content) + Cursor Agent (styling)  
-**Files:** Footer fragment in DA, `blocks/footer/footer.css`
-
-Changes:
-- [ ] Social media icons — circular icon buttons (Facebook, X, Instagram) instead of plain text
-- [ ] App Store + Google Play download buttons
-- [ ] NASCAR network legal strip: Copyright, Do Not Sell, Privacy Policy, AdChoices, Manage Cookies, Accessibility, Careers
-- [ ] NASCAR network links: NASCAR Kids, NASCAR Latino, NASCAR Tracks App, Official Travel Packages, Shop
-- [ ] Logo position moved to bottom of footer (currently top)
-
-### 2. Newsletter section
+### 1. Newsletter section
 **Tool:** DA MCP (content) + Cursor Agent (form styling)  
 **Files:** Homepage doc in DA, new/updated section block
 
