@@ -2,77 +2,167 @@
 
 footer {
   background-color: var(--brand-navy);
+}
+
+.footer {
   color: #fff;
   font-size: var(--body-font-size-xs);
+  padding: 60px 24px;
+  text-align: center;
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
-}
-
-footer .footer p {
-  margin: 0 0 8px;
-}
-
-footer .footer a:any-link {
+.footer a:any-link {
   color: #fff;
   text-decoration: none;
 }
 
-footer .footer a:hover {
+.footer > div {
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+/* default-content-wrapper is injected by decorateSections around all p/ul children */
+.footer .default-content-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.footer .default-content-wrapper > p,
+.footer .default-content-wrapper > ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* row 1: social icon links */
+.footer .default-content-wrapper > p:first-child {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.footer .default-content-wrapper > p:first-child a {
+  align-items: center;
+  background-color: rgb(255 255 255 / 15%);
+  border-radius: 50%;
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  width: 44px;
+}
+
+.footer .default-content-wrapper > p:first-child a:hover {
+  background-color: rgb(255 255 255 / 30%);
+}
+
+.footer .default-content-wrapper > p:first-child img {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+
+/* row 2: app download buttons */
+.footer .default-content-wrapper > p:nth-child(2) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.footer .default-content-wrapper > p:nth-child(2) a:any-link {
+  border: 1px solid #fff;
+  border-radius: 100px;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 10px 16px;
+  width: 160px;
+}
+
+.footer .default-content-wrapper > p:nth-child(2) a:hover {
+  background-color: rgb(255 255 255 / 15%);
+}
+
+/* row 3: NASCAR network links */
+.footer .default-content-wrapper > ul:first-of-type {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+.footer .default-content-wrapper > ul:first-of-type li {
+  align-items: center;
+  display: flex;
+}
+
+.footer .default-content-wrapper > ul:first-of-type li + li::before {
+  color: rgb(255 255 255 / 50%);
+  content: "|";
+  padding: 0 10px;
+}
+
+.footer .default-content-wrapper > ul:first-of-type a:hover {
   color: var(--brand-red);
 }
 
-/* logo — constrain size */
-footer .footer img {
-  max-width: 200px;
-  height: auto;
+/* row 4: utility row (phone, About Us, Contact) */
+.footer .default-content-wrapper > p:nth-child(4) {
+  font-size: 0.875rem;
 }
 
-/* social links — inline horizontal, no bullets */
-footer .footer > div:first-child ul {
-  list-style: none;
-  padding: 0;
-  margin: 16px 0;
-  display: flex;
-  gap: 16px;
-}
-
-footer .footer > div:first-child ul li {
-  margin: 0;
-}
-
-footer .footer > div:first-child ul a {
-  font-weight: 600;
-}
-
-/* legal links */
-footer .footer > div:nth-child(2) ul {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0;
+/* row 5: legal strip */
+.footer .default-content-wrapper > ul:last-of-type {
+  color: rgb(255 255 255 / 70%);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 20px;
+  font-size: 0.6875rem;
+  justify-content: center;
+  list-style: none;
 }
 
-footer .footer > div:nth-child(2) ul li {
-  margin: 0;
+.footer .default-content-wrapper > ul:last-of-type li {
+  align-items: center;
+  display: flex;
 }
 
-footer .footer > div:nth-child(2) ul a {
-  font-size: var(--body-font-size-xs);
-  color: rgb(255 255 255 / 75%);
+.footer .default-content-wrapper > ul:last-of-type li + li::before {
+  color: rgb(255 255 255 / 40%);
+  content: "|";
+  padding: 0 8px;
 }
 
-footer .footer > div:nth-child(2) ul a:hover {
+.footer .default-content-wrapper > ul:last-of-type a:any-link {
+  color: rgb(255 255 255 / 70%);
+}
+
+.footer .default-content-wrapper > ul:last-of-type a:hover {
   color: #fff;
 }
 
+/* row 6: logo — DA renders <img> as <picture> (bare, not in a <p>) */
+.footer .default-content-wrapper > picture:last-child {
+  padding-top: 32px;
+}
+
+.footer .default-content-wrapper > picture:last-child img {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+  max-width: 160px;
+}
+
+@media (width >= 600px) {
+  .footer .default-content-wrapper > ul:first-of-type {
+    flex-wrap: nowrap;
+  }
+}
+
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+  .footer {
+    padding: 60px 32px;
   }
 }
