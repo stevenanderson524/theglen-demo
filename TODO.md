@@ -20,6 +20,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 - [x] Hero video using DM OpenAPI direct MP4 URL (`/original/as/Hero-Video.mp4`)
 - [x] **Hero-event block refactor** — Adobe Assets video source resolution, static poster image support, URL normalization (6 local commits, now on main)
 - [x] **Header sub-nav block** — initial implementation committed (`bfcc1fa`)
+- [x] **Hospitality cards invisible in navy-blue section** — fixed in `5f6911d`. Root cause was broader than just the LEARN MORE button: section-scoped rules in `styles.css` (`main .section.navy-blue h3, p, a:any-link` at specificity (0,2,2)) were cascading `color: #fff` onto `h3`, `p`, and `a` inside the Fan Hospitality cards, making titles and descriptions invisible too. Fix bumped block selectors to `main .section .cards-venues .cards-venues-card-body` (specificity (0,3,2)) and added `background-color: transparent` on `a.button.secondary` to neutralize `decorateButtons` from `scripts.js`.
 
 ---
 
@@ -48,12 +49,7 @@ Priority-ordered remaining work to match [theglen.com](https://www.theglen.com) 
 
 ## 🔥 Active Priority Queue
 
-### 1. Hospitality "LEARN MORE" buttons rendering as blank white rectangles
-**Tool:** Cursor Agent  
-**Files:** `blocks/cards-venues/cards-venues.css`, possibly `blocks/cards-venues/cards-venues.js`  
-**Why first:** Visible bug on current demo. Kill it before adding anything new.
-
-### 2. Newsletter section
+### 1. Newsletter section
 **Tool:** DA MCP (content) + Cursor Agent (form styling)  
 **Files:** Homepage doc in DA, new/updated section block
 
@@ -61,7 +57,7 @@ Changes:
 - [ ] Replace "Sign Up" link with actual form fields: First Name, Last Name, Email, reCAPTCHA, red Sign Up button
 - [ ] Background: full-bleed aerial drone photo (not dark navy + panorama)
 
-### 3. Footer rebuild (biggest visual win remaining)
+### 2. Footer rebuild (biggest visual win remaining)
 **Tool:** DA MCP (content) + Cursor Agent (styling)  
 **Files:** Footer fragment in DA, `blocks/footer/footer.css`
 
@@ -72,7 +68,7 @@ Changes:
 - [ ] NASCAR network links: NASCAR Kids, NASCAR Latino, NASCAR Tracks App, Official Travel Packages, Shop
 - [ ] Logo position moved to bottom of footer (currently top)
 
-### 4. Header right-side icons
+### 3. Header right-side icons
 **Tool:** Cursor Agent  
 **Files:** `blocks/header/header.js`, `blocks/header/header.css`  
 **Assets:** `icons/chat.svg` already staged; need barcode/ticket + user profile icons
@@ -80,24 +76,24 @@ Changes:
 Currently: BUY TICKETS button + My Account text only.  
 Add: chat bubble icon, barcode/ticket icon, user profile icon (to the left of BUY TICKETS).
 
-### 5. Finish sub-nav polish and commit WIP
+### 4. Finish sub-nav polish and commit WIP
 **Tool:** Cursor Agent  
-Verify the uncommitted header/nav changes on preview, then commit. May happen in parallel with #4.
+Verify the uncommitted header/nav changes on preview, then commit. May happen in parallel with #3.
 
-### 6. GoBowling / NASCAR Kids ad banner
+### 5. GoBowling / NASCAR Kids ad banner
 **Tool:** DA MCP (content) + Cursor Agent (styling if needed)  
 **Location:** Between "Track History" and "Fan Hospitality" sections on homepage.
 
-### 7. Columns-icons bar — add actual icons
+### 6. Columns-icons bar — add actual icons
 **Tool:** DA MCP (icon references) + Cursor Agent (rendering)  
 **Files:** `blocks/columns-icons/*`  
 Currently text-only labels; theglen.com has icons above each label.
 
-### 8. Sponsor carousel partner label
+### 7. Sponsor carousel partner label
 **Tool:** Cursor Agent (CSS)  
 Partner name currently renders as gray overlay box. Should be a clean label below the image, or hidden entirely.
 
-### 9. Hero rotating carousel
+### 8. Hero rotating carousel
 **Tool:** Cursor Agent (new block or extend existing) + DA MCP (slide content)  
 **Why last:** Most involved. Currently static image + video. Build new `carousel` or extend `hero-event` / use existing `carousel-gallery` block to cycle multiple slides.
 
